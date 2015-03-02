@@ -27,9 +27,14 @@ var snake = {
     direction: "dx",
     velocity: 5,
     score: 0,
+    eat: function eat(){
+        var audio = document.getElementById("eating")
+        audio.play()
+        return this
+    },
     autocollide: function autocollide(head) {
         console.log("checking")
-        return  _.some(this.struct, function(item) {
+        return  _.some(this.struct, function (item) {
             return item.x == head.x && item.y == head.y
         }, false)
     },
@@ -118,10 +123,8 @@ var game = {
     },
     restart: function restart() {
         console.log("dead")
-        var showScore = function () {
-            alert("your score is: ", this.snake.score)
-        }
-        showScore()
+        alert("your score is: " + this.snake.score)
+
         this.board = board.init();
         this.snake = snake.init();
         this.food = food.init();
@@ -152,6 +155,7 @@ var game = {
             this.snake.score += 50;
             this.food.newFood()
             this.snake.velocity++;
+            this.snake.eat()
             //do not remove tail
         } else {
             //del tail
@@ -174,6 +178,7 @@ var game = {
         //check auto collision
         if (this.snake.autocollide(newHead)) {
             this.restart()
+            return
         }
         this.snake.struct.unshift(newHead)
         // console.log(this.snake.struct)

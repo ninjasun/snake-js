@@ -10,13 +10,21 @@
 <canvas id="canvas" width="500" height="500"
         style="border:1px solid #000000;">
 </canvas>
+<audio autoplay="" loop="">
+    <source src="media/Androids.wav" type="audio/wav" >
+    Your browser does not support the audio element.
+</audio>
+<audio id="eating">
+    <source src="media/eating.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+</audio>
 <script src="script.js"></script>
 <script>
-    (function (){
-        var play =game.init()
-        setInterval(function(){
-            play.draw().start()
-        }, 100 - play.snake.velocity * 3
+    (function () {
+        var play = game.init()
+        setInterval(function () {
+                    play.draw().start()
+                }, 100 - play.snake.velocity * 5
         )
     })()
 </script>
