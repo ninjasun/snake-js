@@ -16,7 +16,7 @@
         var play =game.init()
         setInterval(function(){
             play.draw().start()
-        }, 100
+        }, 100 - play.snake.velocity * 3
         )
     })()
 </script>

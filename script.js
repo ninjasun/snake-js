@@ -27,7 +27,12 @@ var snake = {
     direction: "dx",
     velocity: 5,
     score: 0,
-
+    autocollide: function autocollide(head) {
+        console.log("checking")
+        return  _.some(this.struct, function(item) {
+            return item.x == head.x && item.y == head.y
+        }, false)
+    },
     get: function get() {
         return this;
     },
@@ -85,7 +90,7 @@ var game = {
     },
     init: function init() {
         var self = this.snake;
-        console.log("food is:",this.food)
+        // console.log("food is:",this.food)
         window.addEventListener("keydown",
             function onKeyDown(e) {
                 //console.log(self)
@@ -111,6 +116,19 @@ var game = {
         this.snake.direction = self.direction
         return game;
     },
+    restart: function restart() {
+        console.log("dead")
+        var showScore = function () {
+            alert("your score is: ", this.snake.score)
+        }
+        showScore()
+        this.board = board.init();
+        this.snake = snake.init();
+        this.food = food.init();
+        this.init();
+        this.start()
+        return this
+    },
     start: function start() {
         var newHead
         var oldHead = this.snake.struct[0];
@@ -127,19 +145,18 @@ var game = {
         else {//down
             newHead = {x: oldHead.x, y: oldHead.y + 1}
         }
-        console.log(this.food.struct)
-        console.log(newHead)
+        //console.log(this.food.struct)
+        //console.log(newHead)
         if (newHead.x == this.food.struct.x && newHead.y == this.food.struct.y) {
-            console.log("snake eating")
+            //console.log("snake eating")
             this.snake.score += 50;
             this.food.newFood()
-
+            this.snake.velocity++;
             //do not remove tail
         } else {
             //del tail
             this.snake.struct.pop()
         }
-
         //console.log("board width: ",this.board.width)
         if (newHead.x == this.board.width) {
             newHead.x = 0;
@@ -154,10 +171,13 @@ var game = {
         if (newHead.x == -1)
             newHead.x = this.board.width;
 
+        //check auto collision
+        if (this.snake.autocollide(newHead)) {
+            this.restart()
+        }
         this.snake.struct.unshift(newHead)
         // console.log(this.snake.struct)
         return game;
-
     },
 
     printBoard: function printBoard() {
