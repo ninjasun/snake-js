@@ -60,7 +60,7 @@ var board = {
 }
 
 var food = {
-    struct: {},
+    struct: {x: 25, y: 25},
     get: function get() {
         return this
     },
@@ -68,22 +68,24 @@ var food = {
         this.struct = {x: 25, y: 25}
         return this
     },
-    newFood : function newFood(){
-        this.struct.x = Math.random() *51
-        this.struct.y = Math.random() *51
+    newFood: function newFood() {
+        this.struct.x = parseInt(Math.random() * 50)
+        this.struct.y = parseInt(Math.random() * 50)
+        return this
     }
 }
 
 var game = {
     board: board.init(),
     snake: snake.init(),
-    food: food.init(),
+    food: food.newFood(),
     zoomView: 10,
     get: function get() {
         return this
     },
     init: function init() {
-        var self = this.snake
+        var self = this.snake;
+        console.log("food is:",this.food)
         window.addEventListener("keydown",
             function onKeyDown(e) {
                 //console.log(self)
@@ -114,7 +116,7 @@ var game = {
         var oldHead = this.snake.struct[0];
         // console.log(this.struct)
         if (this.snake.direction == "dx") {
-            newHead = {x: oldHead.x +1, y: oldHead.y}
+            newHead = {x: oldHead.x + 1, y: oldHead.y}
         }
         else if (this.snake.direction == "sx") {
             newHead = {x: oldHead.x - 1, y: oldHead.y}
@@ -125,20 +127,21 @@ var game = {
         else {//down
             newHead = {x: oldHead.x, y: oldHead.y + 1}
         }
-
-        if(newHead.x == this.food.struct.x && newHead == this.food.struct.y){
+        console.log(this.food.struct)
+        console.log(newHead)
+        if (newHead.x == this.food.struct.x && newHead.y == this.food.struct.y) {
             console.log("snake eating")
             this.snake.score += 50;
             this.food.newFood()
 
             //do not remove tail
-        }else {
+        } else {
             //del tail
             this.snake.struct.pop()
         }
 
         //console.log("board width: ",this.board.width)
-        if (newHead.x == this.board.width){
+        if (newHead.x == this.board.width) {
             newHead.x = 0;
             //console.log("head is: ",newHead)
         }
@@ -152,7 +155,7 @@ var game = {
             newHead.x = this.board.width;
 
         this.snake.struct.unshift(newHead)
-       // console.log(this.snake.struct)
+        // console.log(this.snake.struct)
         return game;
 
     },
