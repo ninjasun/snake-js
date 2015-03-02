@@ -13,7 +13,11 @@
 <script src="script.js"></script>
 <script>
     (function (){
-        game.init().draw()
+        var play =game
+        setInterval(function(){
+            play.draw().start()
+        }, 600
+        )
     })()
 </script>
 </body>
