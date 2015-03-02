@@ -122,15 +122,8 @@ var game = {
         return game;
     },
     restart: function restart() {
-        console.log("dead")
-        alert("your score is: " + this.snake.score)
+        console.log("dead, your score is: " + this.snake.score)
 
-        this.board = board.init();
-        this.snake = snake.init();
-        this.food = food.init();
-        this.init();
-        this.start()
-        return this
     },
     start: function start() {
         var newHead
