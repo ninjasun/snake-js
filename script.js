@@ -27,6 +27,7 @@ var snake = {
     direction: "dx",
     velocity: 5,
     score: 0,
+
     get: function get() {
         return this;
     },
@@ -66,6 +67,10 @@ var food = {
     init: function init() {
         this.struct = {x: 25, y: 25}
         return this
+    },
+    newFood : function newFood(){
+        this.struct.x = Math.random() *51
+        this.struct.y = Math.random() *51
     }
 }
 
@@ -78,23 +83,38 @@ var game = {
         return this
     },
     init: function init() {
-// put snake and food into board matrix
-        /* this.snake.struct.forEach(function (item) {
-         //console.log("item is: ", item)
-         this.board.struct[item.x][item.y].type = "snake"
-         console.log("adding item: ", item)
-         })
-         this.food.struct.forEach(function (item) {
-         this.board.struct[item.x][item.y] = "food";
-         })// note that food is one box
-         return game;*/
+        var self = this.snake
+        window.addEventListener("keydown",
+            function onKeyDown(e) {
+                //console.log(self)
+                switch (e.keyCode) {
+                    case 37: //left
+                        if (self.direction != "dx")
+                            self.direction = "sx"
+                        break;
+                    case 38: // up
+                        if (self.direction != "down")
+                            self.direction = "up"
+                        break;
+                    case 39: //right
+                        if (self.direction != "sx")
+                            self.direction = "dx"
+                        break;
+                    case 40: //down
+                        if (self.direction != "up")
+                            self.direction = "down"
+                        break;
+                }
+            })
+        this.snake.direction = self.direction
+        return game;
     },
     start: function start() {
         var newHead
         var oldHead = this.snake.struct[0];
         // console.log(this.struct)
         if (this.snake.direction == "dx") {
-            newHead = {x: oldHead.x + 1, y: oldHead.y}
+            newHead = {x: oldHead.x +1, y: oldHead.y}
         }
         else if (this.snake.direction == "sx") {
             newHead = {x: oldHead.x - 1, y: oldHead.y}
@@ -105,13 +125,34 @@ var game = {
         else {//down
             newHead = {x: oldHead.x, y: oldHead.y + 1}
         }
-        //tail become board element
-        this.snake.struct.pop()
 
-        //console.log("head is: ",newHead)
+        if(newHead.x == this.food.struct.x && newHead == this.food.struct.y){
+            console.log("snake eating")
+            this.snake.score += 50;
+            this.food.newFood()
+
+            //do not remove tail
+        }else {
+            //del tail
+            this.snake.struct.pop()
+        }
+
+        //console.log("board width: ",this.board.width)
+        if (newHead.x == this.board.width){
+            newHead.x = 0;
+            //console.log("head is: ",newHead)
+        }
+        if (newHead.y == this.board.height)
+            newHead.y = 0;
+
+        if (newHead.y == -1)
+            newHead.y = this.board.height;
+
+        if (newHead.x == -1)
+            newHead.x = this.board.width;
 
         this.snake.struct.unshift(newHead)
-        console.log(this.snake.struct)
+       // console.log(this.snake.struct)
         return game;
 
     },
@@ -136,11 +177,11 @@ var game = {
                 row.forEach(function (item) {
                     //console.log("drawing a: ",item)
                     ctx.fillStyle = "white";
-                    ctx.fillRect(item.x * 10, item.y * 10, 10,10);
+                    ctx.fillRect(item.x * 10, item.y * 10, 10, 10);
                 })
             }
         )
-//draw snake
+        //draw snake
         this.snake.struct.forEach(function (item) {
             //console.log(row)
             //console.log("drawing a: ",item)
